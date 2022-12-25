@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Work {
-  id             String   @id @default(cuid()) @map("_id")
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   country        String
   name           String
   author         String
@@ -20,4 +20,11 @@ model Work {
   theme          String
   idea           String
   mainCharacters String[]
+}
+
+model Writer {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  country String
+  name    String
+  workIds String[]
 }
