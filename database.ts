@@ -33,9 +33,8 @@ export async function getRandomWorkIds(n: number, excludeId: string|null = null)
   if (excludeId !== null && ids.includes(excludeId)) {
     ids.splice(ids.indexOf(excludeId), 1)
   }
-  const nTotal: number = ids.length
-  const indexes: number[] = getRandNumArray(nTotal, n)
-  return indexes.map(index => ids[index])
+
+  return getRandArrayItems<string>(ids, n)
 }
 
 async function getWorkById(id: string): Promise<Work> {
