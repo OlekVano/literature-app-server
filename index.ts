@@ -1,5 +1,5 @@
 require('dotenv').config()
-import { getRandomABCDQuestion } from './database'
+import { getRandomABCDQuestion } from './db'
 
 const express = require('express')
 const app = express()
