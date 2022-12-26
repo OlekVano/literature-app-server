@@ -52,7 +52,23 @@ async function getMultipleWorksValues(ids: string[], value: string): Promise<any
   })).map(e => e[value])
 }
 
-export async function getRandomABCDQuestion() {
+async function getWorkPropertyVariations(property: string): Promise<string[]> {
+  const selectDict: {[key: string]: boolean} = {}
+  selectDict[property] = true
+  return (await prisma.work.findMany({
+    select: selectDict
+  })).map(e => e[property])
+}
+
+async function getRandWorkPropertyVariationsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
+  const variations: string[] = await getWorkPropertyVariations(property)
+  const uniqueVariations = removeDuplicates<string>(variations)
+
+  if (exception !== null) uniqueVariations.splice(uniqueVariations.indexOf(exception), uniqueVariations.indexOf(exception))
+
+  return getRandArrayItems<string>(uniqueVariations, 3)
+}
+
   const randomWorkIds: string[] = await getRandomWorkIds(4)
 
   const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
