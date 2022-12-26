@@ -17,6 +17,15 @@ export function getRandArrayItem<T>(arr: T[]): T {
   return arr[getRandNum(arr.length)]
 }
 
+export function getRandArrayItems<T>(arr: T[], n: number): T[] {
+  const indexes: number[] = getRandNumArray(arr.length, n)
+  return indexes.map(index => arr[index])
+}
+
+export function removeDuplicates<T>(arr: T[]): T[] {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+}
+
 export function replaceAll(str: string, pattern: string, replacement: string): string {
   return str.split(pattern).join(replacement)
 }
