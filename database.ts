@@ -1,6 +1,6 @@
 import { PrismaClient, Work } from '@prisma/client'
 const prisma = new PrismaClient()
-import { getRandNumArray, getRandNum, getRandArrayItem, replaceAll, fillPattern } from './utils'
+import { getRandNumArray, getRandNum, getRandArrayItem, replaceAll, fillPattern, removeDuplicates, getRandArrayItems, shuffleArray } from './utils'
 import { WorkProperty } from './types'
 
 export async function getAllWorkIds(): Promise<string[]> {
@@ -69,6 +69,7 @@ async function getRandWorkPropertyVariationsExcept(property: string, n: number, 
   return getRandArrayItems<string>(uniqueVariations, 3)
 }
 
+export async function getRandomABCDQuestionOld() {
   const randomWorkIds: string[] = await getRandomWorkIds(4)
 
   const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
@@ -100,6 +101,37 @@ async function getRandWorkPropertyVariationsExcept(property: string, n: number, 
   }
 }
 
+export async function getRandomABCDQuestion() {
+  const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
+    'author': 'Хто є автором твору "%name%"?',
+    'genre': 'Якого жанру є твір "%name%"?',
+    'direction': 'Якого напряму є твір "%name%"?',
+    'theme': 'Яка тема твору "%name%"?',
+    'idea': 'Яка ідея твору "%name%"?',
+  }
+
+  const randomWork: Work = await getRandomWork()
+
+  // @ts-ignore
+  const randomQuestionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string]  = getRandArrayItem<[Exclude<WorkProperty, 'mainCharacters'>, string]>(Object.entries(possibleQuestionPatterns))
+  const property: Exclude<WorkProperty, 'mainCharacters'> = randomQuestionPattern[0]
+  const questionPattern: string = randomQuestionPattern[1]
+
+  const correctAnswer = randomWork[property]
+
+  const answerOptions = await getRandWorkPropertyVariationsExcept(property, 3, correctAnswer)
+  answerOptions.push(correctAnswer)
+  shuffleArray(answerOptions)
+
+  // @ts-ignore
+  const question: string = fillPattern(questionPattern, randomWork)
+
+  return {
+    question: question,
+    options: answerOptions,
+    answer: correctAnswer
+  }
+}
 
 
 
