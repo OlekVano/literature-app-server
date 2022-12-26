@@ -19,6 +19,15 @@ export async function getNumWorks(): Promise<number> {
   return await prisma.work.count()
 }
 
+export async function getRandomWork(): Promise<Work> {
+  const total: number = await getNumWorks()
+  const skip: number = getRandNum(total)
+
+  return await prisma.work.findFirstOrThrow({
+    skip: skip
+  })
+}
+
 export async function getRandomWorkIds(n: number, excludeId: string|null = null): Promise<string[]> {
   const ids: string[] = await getAllWorkIds()
   if (excludeId !== null && ids.includes(excludeId)) {
