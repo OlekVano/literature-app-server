@@ -1,7 +1,5 @@
-import { PrismaClient, Work } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
-import { getRandNumArray, getRandNum, getRandArrayItem, replaceAll, fillPattern, removeDuplicates, getRandArrayItems, shuffleArray } from './utils'
-import { WorkProperty } from './types'
 
 async function main(): Promise<void> {
   console.log('Server start')
