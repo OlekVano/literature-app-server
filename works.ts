@@ -52,7 +52,7 @@ async function getWorkPropVars(property: string): Promise<string[]> {
   selectDict[property] = true
   return (await prisma.work.findMany({
     select: selectDict
-  })).map(e => e[property])
+  })).map(e => e[property]).flat()
 }
 
 async function getRandWorkPropVarsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
@@ -96,23 +96,26 @@ export async function getRandomABCDQuestionOld() {
   }
 }
 
-export async function getRandomABCDQuestion() {
-  const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
+export async function getRandomQuestion() {
+  const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
     'genre': 'Якого жанру є твір "%name%"?',
     'direction': 'Якого напряму є твір "%name%"?',
     'theme': 'Яка тема твору "%name%"?',
     'idea': 'Яка ідея твору "%name%"?',
+    'mainCharacters': 'Хто є одним з героїв твору "%name%"?'
   }
 
   const randomWork: Work = await getRandWork()
 
   // @ts-ignore
-  const randomQuestionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string]  = getRandArrayItem<[Exclude<WorkProperty, 'mainCharacters'>, string]>(Object.entries(possibleQuestionPatterns))
-  const property: Exclude<WorkProperty, 'mainCharacters'> = randomQuestionPattern[0]
+  const randomQuestionPattern: [WorkProperty, string]  = getRandArrayItem<[WorkProperty, string]>(Object.entries(possibleQuestionPatterns))
+  const property: WorkProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
 
-  const correctAnswer = randomWork[property]
+  // @ts-ignore
+  const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrayItem<string>(randomWork[property])
+
 
   const answerOptions = await getRandWorkPropVarsExcept(property, 3, correctAnswer)
   answerOptions.push(correctAnswer)
