@@ -4,8 +4,8 @@ export function getRandNum(max: number): number {
   
 export function getRandNumArray(max: number, length: number): number[] {
   const arr: number[] = []
-  // Iterate 15 times in order to avoid iterating too many times in case of a bug or anomaly in random
-  for (let i = 15; i--;) {
+  // Iterate at maximum 60 times in order to avoid iterating too many times in case of a bug or anomaly in random
+  for (let i = 60; i--;) {
     const n = getRandNum(max)
     if (!arr.includes(n)) arr.push(n)
     if (arr.length >= length) break
