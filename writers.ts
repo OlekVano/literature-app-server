@@ -1,20 +1,20 @@
 import { Writer } from '@prisma/client'
 import prisma from './db'
 
-import { getRandArrayItems, removeDuplicates, shuffleArray, getRandNum, getRandArrayItem, fillPattern } from './utils'
+import { getRandNum } from './utils'
 
-export async function getAllWritersIds(): Promise<string[]> {
+export async function getAllIds(): Promise<string[]> {
   return (await prisma.writer.findMany({
     select: {id: true},
   })).map(e => e.id)
 }
 
-export async function getNumWorks(): Promise<number> {
+export async function getTotalNum(): Promise<number> {
   return await prisma.writer.count()
 }
 
-export async function getRandWork(): Promise<Writer> {
-  const total: number = await getNumWorks()
+export async function getRand(): Promise<Writer> {
+  const total: number = await getTotalNum()
   const skip: number = getRandNum(total)
 
   return await prisma.writer.findFirstOrThrow({

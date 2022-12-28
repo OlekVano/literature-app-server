@@ -4,7 +4,7 @@ export function getRandNum(max: number): number {
   
 export function getRandNumArray(max: number, length: number): number[] {
   const arr: number[] = []
-  // Iterate at maximum 60 times in order to avoid iterating too many times in case of a bug or anomaly in random
+  // Iterate a maximum of 60 times in order to avoid iterating too many times in case of a bug or anomaly in random
   for (let i = 60; i--;) {
     const n = getRandNum(max)
     if (!arr.includes(n)) arr.push(n)
@@ -13,11 +13,11 @@ export function getRandNumArray(max: number, length: number): number[] {
   return arr
 }
 
-export function getRandArrayItem<T>(arr: T[]): T {
+export function getRandArrItem<T>(arr: T[]): T {
   return arr[getRandNum(arr.length)]
 }
 
-export function getRandArrayItems<T>(arr: T[], n: number): T[] {
+export function getRandArrItems<T>(arr: T[], n: number): T[] {
   const indexes: number[] = getRandNumArray(arr.length, n)
   return indexes.map(index => arr[index])
 }
@@ -38,11 +38,11 @@ export function fillPattern(questionPattern: string, dict: {[key: string]: strin
   return questionPattern
 }
 
-export function shuffleArray(arr: any[]): void{
+export function shuffleArray<T>(arr: T[]): void {
   for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
   }
 }

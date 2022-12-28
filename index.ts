@@ -8,7 +8,7 @@ const port = process.env.PORT || 3001
 
 app.get('/questions/random', async (req: any, res: any) => {
   try {
-    // res.json(await getRandomABCDQuestion())
+    res.json(await Works.getRandABCDQuestion())
   } catch (err) {
     res.code(500).send({ message: err })
   }
@@ -16,5 +16,5 @@ app.get('/questions/random', async (req: any, res: any) => {
 
 app.listen(port, async () => {
   console.log( `Server started at http://localhost:${ port }` );
-  console.log(await Works.getRandomQuestion())
+  console.log(await Works.getRandABCDQuestion())
 });

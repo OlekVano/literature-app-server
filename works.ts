@@ -1,21 +1,21 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrayItems, removeDuplicates, shuffleArray, getRandNum, getRandArrayItem, fillPattern } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, getRandArrItem, fillPattern } from './utils'
 import { WorkProperty } from './types'
 
-export async function getAllWorkIds(): Promise<string[]> {
+export async function getAllIds(): Promise<string[]> {
   return (await prisma.work.findMany({
     select: {id: true},
   })).map(e => e.id)
 }
 
-export async function getNumWorks(): Promise<number> {
+export async function getTotalNum(): Promise<number> {
   return await prisma.work.count()
 }
 
 export async function getRandWork(): Promise<Work> {
-  const total: number = await getNumWorks()
+  const total: number = await getTotalNum()
   const skip: number = getRandNum(total)
 
   return await prisma.work.findFirstOrThrow({
@@ -23,22 +23,22 @@ export async function getRandWork(): Promise<Work> {
   })
 }
 
-export async function getRandWorkIds(n: number, excludeId: string|null = null): Promise<string[]> {
-  const ids: string[] = await getAllWorkIds()
+export async function getRandIds(n: number, excludeId: string|null = null): Promise<string[]> {
+  const ids: string[] = await getAllIds()
   if (excludeId !== null && ids.includes(excludeId)) {
     ids.splice(ids.indexOf(excludeId), 1)
   }
 
-  return getRandArrayItems<string>(ids, n)
+  return getRandArrItems<string>(ids, n)
 }
 
-async function getWorkById(id: string): Promise<Work> {
+async function getById(id: string): Promise<Work> {
   return await prisma.work.findUniqueOrThrow({
     where: {id: id}
   })
 }
 
-async function getMultipleWorkPropVars(ids: string[], property: string): Promise<any> {
+async function getMultiplePropVariations(ids: string[], property: string): Promise<any> {
   const selectDict: {[key: string]: boolean} = {}
   selectDict[property] = true
   return (await prisma.work.findMany({
@@ -47,7 +47,7 @@ async function getMultipleWorkPropVars(ids: string[], property: string): Promise
   })).map(e => e[property])
 }
 
-async function getWorkPropVars(property: string): Promise<string[]> {
+async function getAllPropVariations(property: string): Promise<string[]> {
   const selectDict: {[key: string]: boolean} = {}
   selectDict[property] = true
   return (await prisma.work.findMany({
@@ -55,17 +55,17 @@ async function getWorkPropVars(property: string): Promise<string[]> {
   })).map(e => e[property]).flat()
 }
 
-async function getRandWorkPropVarsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
-  const variations: string[] = await getWorkPropVars(property)
+async function getRandPropVarsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
+  const variations: string[] = await getAllPropVariations(property)
   const uniqueVariations = removeDuplicates<string>(variations)
 
   if (exception !== null) uniqueVariations.splice(uniqueVariations.indexOf(exception), uniqueVariations.indexOf(exception))
 
-  return getRandArrayItems<string>(uniqueVariations, 3)
+  return getRandArrItems<string>(uniqueVariations, 3)
 }
 
-export async function getRandomABCDQuestionOld() {
-  const randomWorkIds: string[] = await getRandWorkIds(4)
+export async function getRandABCDQuestionOld() {
+  const randomWorkIds: string[] = await getRandIds(4)
 
   const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
     'author': 'Хто є автором твору "%name%"?',
@@ -79,11 +79,11 @@ export async function getRandomABCDQuestionOld() {
   const value: Exclude<WorkProperty, 'mainCharacters'> = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
   
-  const possibleAnswers: string[] = await getMultipleWorkPropVars(randomWorkIds, value)
+  const possibleAnswers: string[] = await getMultiplePropVariations(randomWorkIds, value)
 
   // @ts-ignore
   const mainWorkId: string = randomWorkIds.pop()
-  const mainWork: Work = await getWorkById(mainWorkId)
+  const mainWork: Work = await getById(mainWorkId)
 
   // @ts-ignore
   const question: string = fillPattern(questionPattern, mainWork)
@@ -96,7 +96,7 @@ export async function getRandomABCDQuestionOld() {
   }
 }
 
-export async function getRandomQuestion() {
+export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
     'genre': 'Якого жанру є твір "%name%"?',
@@ -117,9 +117,9 @@ export async function getRandomQuestion() {
   const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrayItem<string>(randomWork[property])
 
 
-  const answerOptions = await getRandWorkPropVarsExcept(property, 3, correctAnswer)
+  const answerOptions = await getRandPropVarsExcept(property, 3, correctAnswer)
   answerOptions.push(correctAnswer)
-  shuffleArray(answerOptions)
+  shuffleArray<string>(answerOptions)
 
   // @ts-ignore
   const question: string = fillPattern(questionPattern, randomWork)
