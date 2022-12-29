@@ -64,7 +64,7 @@ async function getRandPropVarsExcept(property: string, n: number, exception: str
   return getRandArrItems<string>(uniqueVariations, 3)
 }
 
-export async function getRandABCDQuestionOld() {
+export async function getRandABCDQuestionV1() {
   const randomWorkIds: string[] = await getRandIds(4)
 
   const possibleQuestionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
@@ -96,7 +96,7 @@ export async function getRandABCDQuestionOld() {
   }
 }
 
-export async function getRandABCDQuestion() {
+export async function getRandABCDQuestionV2() {
   const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
     'genre': 'Якого жанру є твір "%name%"?',
@@ -114,7 +114,41 @@ export async function getRandABCDQuestion() {
   const questionPattern: string = randomQuestionPattern[1]
 
   // @ts-ignore
-  const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrayItem<string>(randomWork[property])
+  const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrItem<string>(randomWork[property])
+
+  const answerOptions = await getRandPropVarsExcept(property, 3, correctAnswer)
+  answerOptions.push(correctAnswer)
+  shuffleArray<string>(answerOptions)
+
+  // @ts-ignore
+  const question: string = fillPattern(questionPattern, randomWork)
+
+  return {
+    question: question,
+    options: answerOptions,
+    answer: correctAnswer
+  }
+}
+
+export async function getRandABCDQuestionV3() {
+  const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
+    'author': 'Хто є автором твору "%name%"?',
+    'genre': 'Якого жанру є твір "%name%"?',
+    'direction': 'Якого напряму є твір "%name%"?',
+    'theme': 'Яка тема твору "%name%"?',
+    'idea': 'Яка ідея твору "%name%"?',
+    'mainCharacters': 'Хто є одним з героїв твору "%name%"?'
+  }
+
+  const randomWork: Work = await getRandWork()
+
+  // @ts-ignore
+  const randomQuestionPattern: [WorkProperty, string]  = getRandArrItem<[WorkProperty, string]>(Object.entries(possibleQuestionPatterns).filter(e => randomWork[e[0]] !== ''))
+  const property: WorkProperty = randomQuestionPattern[0]
+  const questionPattern: string = randomQuestionPattern[1]
+
+  // @ts-ignore
+  const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrItem<string>(randomWork[property])
 
 
   const answerOptions = await getRandPropVarsExcept(property, 3, correctAnswer)
