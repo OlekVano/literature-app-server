@@ -1,7 +1,7 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, getRandArrItem, fillPattern } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem } from './utils'
 import { WorkProperty } from './types'
 
 export async function getAllIds(): Promise<string[]> {
@@ -75,7 +75,7 @@ export async function getRandABCDQuestionOld() {
     'idea': 'Яка ідея твору "%name%"?',
   }
   // @ts-ignore
-  const randomQuestionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string]  = getRandArrayItem<[Exclude<WorkProperty, 'mainCharacters'>, string]>(Object.entries(possibleQuestionPatterns))
+  const randomQuestionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string]  = getRandArrItem<[Exclude<WorkProperty, 'mainCharacters'>, string]>(Object.entries(possibleQuestionPatterns))
   const value: Exclude<WorkProperty, 'mainCharacters'> = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
   
@@ -109,7 +109,7 @@ export async function getRandABCDQuestion() {
   const randomWork: Work = await getRandWork()
 
   // @ts-ignore
-  const randomQuestionPattern: [WorkProperty, string]  = getRandArrayItem<[WorkProperty, string]>(Object.entries(possibleQuestionPatterns))
+  const randomQuestionPattern: [WorkProperty, string]  = getRandArrItem<[WorkProperty, string]>(Object.entries(possibleQuestionPatterns))
   const property: WorkProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
 
