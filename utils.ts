@@ -46,3 +46,15 @@ export function shuffleArray<T>(arr: T[]): void {
     arr[j] = temp;
   }
 }
+
+export function getKeys(dict: {}): string[] {
+  return Object.keys(dict)
+}
+
+export function removeEmpty<T>(arr: T[]): T[] {
+  return arr.filter(e => e !== '')
+}
+
+export function removeAllMatches<T>(arr: T[], match: T): T[] {
+  return arr.filter(e => e !== match)
+}
