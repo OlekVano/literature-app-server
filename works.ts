@@ -64,7 +64,7 @@ async function getRandPropVarsExcept(property: string, n: number, exception: str
   return getRandArrItems<string>(uniqueVariations, 3)
 }
 
-export async function getRandABCDQuestionV3() {
+export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
     'genre': 'Якого жанру є твір "%name%"?',
