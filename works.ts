@@ -47,7 +47,7 @@ async function getMultiplePropVariations(ids: string[], property: string): Promi
   })).map(e => e[property])
 }
 
-async function getAllPropVariations(property: string): Promise<string[]> {
+async function getAllPropVariations(property: WorkProperty): Promise<string[]> {
   const selectDict: {[key: string]: boolean} = {}
   selectDict[property] = true
   return (await prisma.work.findMany({
@@ -55,7 +55,7 @@ async function getAllPropVariations(property: string): Promise<string[]> {
   })).map(e => e[property]).flat()
 }
 
-async function getRandPropVarsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
+async function getRandPropVarsExcept(property: WorkProperty, n: number, exception: string|null = null): Promise<string[]> {
   const variations: string[] = (await getAllPropVariations(property)).filter(e => e !== '').filter(e => e !== exception)
   const uniqueVariations = removeDuplicates<string>(variations)
 
