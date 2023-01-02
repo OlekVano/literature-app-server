@@ -1,7 +1,7 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, removeAllMatches, removeEmpty, getKeys, getKeysValues } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, removeEmpty, getKeys, getKeysValues, removeArrItem } from './utils'
 import { WorkProperty } from './types'
 
 async function getAllIds(): Promise<string[]> {
@@ -94,6 +94,54 @@ export async function getRandABCDQuestion() {
   return {
     question: question,
     options: answerOptions,
+    answer: correctAnswer
+  }
+}
+
+export async function getRandomCorrectPropertyQuestion() {
+  const possibleOptionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
+    'author': 'Автором твору "%name%" є %author%.',
+    'genre': 'Твір "%name%" є жанру %genre%.',
+    'direction': 'Твір "%name%" є напряму %direction%.',
+    'theme': 'Тема твору "%name%" - %theme%.',
+    'idea': 'Ідея твору "%name%" - %idea%.',
+  }
+
+  const randWork: Work = await getRandWork()
+  // @ts-ignore
+  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
+  shuffleArray(randomQuestionPatterns)
+
+  // @ts-ignore
+  const randomQuestionPattern: [WorkProperty, string] = randomQuestionPatterns.pop()
+  const property: WorkProperty = randomQuestionPattern[0]
+  const questionPattern: string = randomQuestionPattern[1]
+
+  const properties = randomQuestionPatterns.map(e => e[0])
+
+  for (let property of properties) {
+    // @ts-ignore
+    randWork[property] = (await getRandPropVarsExcept(property, 1, randWork[property]))[0]
+  }
+
+  console.log('RAND WORK')
+  console.log(randWork)
+
+  // @ts-ignore
+  const correctAnswer: string = fillPattern(questionPattern, randWork)
+  const options = [correctAnswer]
+
+  console.log('RAND WORK2')
+  console.log(randWork)
+
+  for (let i of randomQuestionPatterns) {
+    // @ts-ignore
+    options.push(fillPattern(i[1], randWork))
+  }
+
+  return {
+    question: 'Яке з твердженнь є вірним?',
+    options: options,
     answer: correctAnswer
   }
 }
