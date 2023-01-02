@@ -4,17 +4,17 @@ import { Work } from '@prisma/client'
 import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem } from './utils'
 import { WorkProperty } from './types'
 
-export async function getAllIds(): Promise<string[]> {
+async function getAllIds(): Promise<string[]> {
   return (await prisma.work.findMany({
     select: {id: true},
   })).map(e => e.id)
 }
 
-export async function getTotalNum(): Promise<number> {
+async function getTotalNum(): Promise<number> {
   return await prisma.work.count()
 }
 
-export async function getRandWork(): Promise<Work> {
+async function getRandWork(): Promise<Work> {
   const total: number = await getTotalNum()
   const skip: number = getRandNum(total)
 
@@ -23,7 +23,7 @@ export async function getRandWork(): Promise<Work> {
   })
 }
 
-export async function getRandIds(n: number, excludeId: string|null = null): Promise<string[]> {
+async function getRandIds(n: number, excludeId: string|null = null): Promise<string[]> {
   const ids: string[] = await getAllIds()
   if (excludeId !== null && ids.includes(excludeId)) {
     ids.splice(ids.indexOf(excludeId), 1)
