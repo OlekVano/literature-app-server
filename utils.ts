@@ -51,6 +51,10 @@ export function getKeys(dict: {}): string[] {
   return Object.keys(dict)
 }
 
+export function getKeysValues(dict: {}): [string, unknown][] {
+  return Object.entries(dict)
+}
+
 export function removeEmpty<T>(arr: T[]): T[] {
   return arr.filter(e => e !== '')
 }
