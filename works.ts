@@ -59,7 +59,7 @@ async function getRandPropVarsExcept(property: WorkProperty, n: number, exceptio
   const variations: string[] = (await getAllPropVariations(property)).filter(e => e !== '').filter(e => e !== exception)
   const uniqueVariations = removeDuplicates<string>(variations)
 
-  return getRandArrItems<string>(uniqueVariations, 3)
+  return getRandArrItems<string>(uniqueVariations, n)
 }
 
 export async function getRandABCDQuestion() {
