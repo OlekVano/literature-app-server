@@ -56,7 +56,7 @@ async function getAllPropVariations(property: string): Promise<string[]> {
 }
 
 async function getRandPropVarsExcept(property: string, n: number, exception: string|null = null): Promise<string[]> {
-  const variations: string[] = await getAllPropVariations(property)
+  const variations: string[] = (await getAllPropVariations(property)).filter(e => e !== '').filter(e => e !== exception)
   const uniqueVariations = removeDuplicates<string>(variations)
 
   if (exception !== null) uniqueVariations.splice(uniqueVariations.indexOf(exception), uniqueVariations.indexOf(exception))
