@@ -17,7 +17,7 @@ app.get('/questions/random', cors(corsOptions), async (req: any, res: any) => {
   try {
     res.json(await Works.getRandABCDQuestionV3())
   } catch (err) {
-    res.code(500).send({ message: err })
+    res.status(500).send({ message: err })
   }
 })
 
