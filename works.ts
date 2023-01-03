@@ -62,6 +62,17 @@ async function getRandPropVarsExcept(property: WorkProperty, n: number, exceptio
   return getRandArrItems<string>(uniqueVariations, n)
 }
 
+async function getRandPropVarExcept(property: WorkProperty, exception: string|null = null) {
+  return (await getRandPropVarsExcept(property, 1, exception)).flat()
+}
+
+async function randomizeWorkProperties(work: Work, properties: WorkProperty[]): Promise<void> {
+  for (let property of properties) {
+    // @ts-ignore
+    work[property] = await getRandPropVarExcept(property, work[property])
+  }
+}
+
 export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
