@@ -1,7 +1,7 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, removeEmpty, getKeys, getKeysValues, removeArrItem } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues } from './utils'
 import { WorkProperty } from './types'
 
 async function getAllIds(): Promise<string[]> {
@@ -113,9 +113,7 @@ export async function getRandomCorrectSingleWorkStatementQuestion() {
   shuffleArray(randomQuestionPatterns)
 
   // @ts-ignore
-  const randomQuestionPattern: [WorkProperty, string] = randomQuestionPatterns.pop()
-  const property: WorkProperty = randomQuestionPattern[0]
-  const questionPattern: string = randomQuestionPattern[1]
+  const questionPattern: string = randomQuestionPatterns.pop()[1]
 
   const properties = randomQuestionPatterns.map(e => e[0])
 
