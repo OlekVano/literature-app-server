@@ -124,15 +124,9 @@ export async function getRandomCorrectPropertyQuestion() {
     randWork[property] = (await getRandPropVarsExcept(property, 1, randWork[property]))[0]
   }
 
-  console.log('RAND WORK')
-  console.log(randWork)
-
   // @ts-ignore
   const correctAnswer: string = fillPattern(questionPattern, randWork)
   const options = [correctAnswer]
-
-  console.log('RAND WORK2')
-  console.log(randWork)
 
   for (let i of randomQuestionPatterns) {
     // @ts-ignore
