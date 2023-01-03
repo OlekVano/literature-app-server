@@ -38,6 +38,14 @@ export function fillPattern(questionPattern: string, dict: {[key: string]: strin
   return questionPattern
 }
 
+export function fillPatterns(patterns: string[], dict: {[key: string]: string}): string[] {
+  const filledPatterns: string[] = []
+  for (let pattern of patterns) {
+    filledPatterns.push(fillPattern(pattern, dict))
+  }
+  return filledPatterns
+}
+
 export function shuffleArray<T>(arr: T[]): void {
   for (var i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
