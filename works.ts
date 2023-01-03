@@ -98,7 +98,7 @@ export async function getRandABCDQuestion() {
   }
 }
 
-export async function getRandomCorrectPropertyQuestion() {
+export async function getRandomCorrectSingleWorkStatementQuestion() {
   const possibleOptionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
     'author': 'Автором твору "%name%" є %author%.',
     'genre': 'Твір "%name%" є жанру %genre%.',
