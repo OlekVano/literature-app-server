@@ -1,7 +1,7 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues, fillPatterns } from './utils'
 import { WorkProperty } from './types'
 
 async function getAllIds(): Promise<string[]> {
@@ -111,39 +111,32 @@ export async function getRandABCDQuestion() {
 
 export async function getRandomCorrectSingleWorkStatementQuestion() {
   const possibleOptionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
-    'author': 'Автором твору "%name%" є %author%.',
-    'genre': 'Твір "%name%" є жанру %genre%.',
-    'direction': 'Твір "%name%" є напряму %direction%.',
-    'theme': 'Тема твору "%name%" - %theme%.',
-    'idea': 'Ідея твору "%name%" - %idea%.',
+    'author': 'Автором твору є "%author%".',
+    'genre': 'Твір є жанру "%genre%".',
+    'direction': 'Твір є напряму "%direction%".',
+    'theme': 'Тема твору - "%theme%".',
+    'idea': 'Ідея твору - "%idea%".'
   }
 
   const randWork: Work = await getRandWork()
   // @ts-ignore
   const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
-  shuffleArray(randomQuestionPatterns)
 
   // @ts-ignore
   const questionPattern: string = randomQuestionPatterns.pop()[1]
-
   const properties = randomQuestionPatterns.map(e => e[0])
-
-  for (let property of properties) {
-    // @ts-ignore
-    randWork[property] = (await getRandPropVarsExcept(property, 1, randWork[property]))[0]
-  }
+  await randomizeWorkProperties(randWork, properties)
 
   // @ts-ignore
   const correctAnswer: string = fillPattern(questionPattern, randWork)
-  const options = [correctAnswer]
-
-  for (let i of randomQuestionPatterns) {
-    // @ts-ignore
-    options.push(fillPattern(i[1], randWork))
-  }
+  
+  // @ts-ignore
+  const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), randWork)
+  options.push(correctAnswer)
+  shuffleArray(options)
 
   return {
-    question: 'Яке з твердженнь є вірним?',
+    question: `Яке з твердженнь про твір "${randWork.name}" є вірним?`,
     options: options,
     answer: correctAnswer
   }
