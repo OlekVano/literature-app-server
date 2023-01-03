@@ -23,5 +23,4 @@ app.get('/questions/random', cors(corsOptions), async (req: any, res: any) => {
 
 app.listen(port, async () => {
   console.log( `Server started at http://localhost:${ port }` );
-  console.log(await Works.getRandABCDQuestion())
 });
