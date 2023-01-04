@@ -15,7 +15,7 @@ const corsOptions = {
 
 app.get('/questions/random', cors(corsOptions), async (req: any, res: any) => {
   try {
-    res.json(await Works.getRandABCDQuestion())
+    res.json(await Works.getRandQuestion())
   } catch (err) {
     res.status(500).send({ message: err })
   }
@@ -23,4 +23,5 @@ app.get('/questions/random', cors(corsOptions), async (req: any, res: any) => {
 
 app.listen(port, async () => {
   console.log( `Server started at http://localhost:${ port }` );
+  console.log(await Works.getRandQuestion())
 });
