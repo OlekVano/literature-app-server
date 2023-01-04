@@ -124,7 +124,7 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
 
   const properties = randomQuestionPatterns.map(e => e[0])
   await randomizeWorkProperties(randWork, properties)
-  const correctAnswer: string = fillPattern(questionPattern[0], randWork)
+  const correctAnswer: string = fillPattern(questionPattern[1], randWork)
   
   const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), randWork)
   options.push(correctAnswer)
