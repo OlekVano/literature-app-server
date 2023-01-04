@@ -136,3 +136,11 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
     answer: correctAnswer
   }
 }
+
+export async function getRandQuestion() {
+  const questionFunctions = [
+    getRandCorrectSingleWorkStatementQuestion
+  ]
+
+  return await getRandArrItem(questionFunctions)()
+}
