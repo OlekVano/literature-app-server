@@ -139,6 +139,7 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
 
 export async function getRandQuestion() {
   const questionFunctions = [
+    getRandABCDQuestion,
     getRandCorrectSingleWorkStatementQuestion
   ]
 
