@@ -133,10 +133,9 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
   if (questionPattern == undefined) return
 
   const properties = randomQuestionPatterns.map(e => e[0])
-  await randomizeWorkProperties(randWork, properties)
   const correctAnswer: string = fillPattern(questionPattern[1], randWork)
   
-  const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), randWork)
+  const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), await getRandWorkWithProperties(properties, properties.map(prop => randWork[prop])))
   options.push(correctAnswer)
   shuffleArray(options)
 
