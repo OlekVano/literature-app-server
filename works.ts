@@ -72,6 +72,16 @@ async function randomizeWorkProperties(work: Work, properties: Exclude<WorkPrope
   })
 }
 
+export async function getRandWorkWithProperties(properties: WorkProperty[], exceptions: string[]): Promise<{[key: string]: string}> {
+  let randomProperties: any = {}
+  for (let i = 0; i < properties.length; i++) {
+    const property = properties[i]
+    const exception = exceptions[i]
+    randomProperties[property] = await getRandPropVarExcept(property, exception)
+  }
+  return randomProperties as {[key: string]: string}
+}
+
 export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
