@@ -118,24 +118,25 @@ export async function getRandABCDQuestion() {
 }
 
 export async function getRandCorrectSingleWorkStatementQuestion() {
-  const possibleOptionPatterns: {[key in Exclude<WorkProperty, 'mainCharacters'>]: string} = {
+  const possibleOptionPatterns: {[key in WorkProperty]: string} = {
     'author': 'Автором твору є "%author%".',
     'genre': 'Твір є жанру "%genre%".',
     'direction': 'Твір є напряму "%direction%".',
     'theme': 'Тема твору - "%theme%".',
-    'idea': 'Ідея твору - "%idea%".'
+    'idea': 'Ідея твору - "%idea%".',
+    'mainCharacters': '%mainCharacters% - один з героїв твору.'
   }
 
   const randWork: Work = await getRandWork()
-  const randomQuestionPatterns: [Exclude<WorkProperty, 'mainCharacters'>, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
+  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
 
-  const questionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string] | undefined = randomQuestionPatterns.pop()
+  const questionPattern: [WorkProperty, string] | undefined = randomQuestionPatterns.pop()
   if (questionPattern == undefined) return
 
   const properties = randomQuestionPatterns.map(e => e[0])
   const correctAnswer: string = fillPattern(questionPattern[1], randWork)
   
-  const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), await getRandWorkWithProperties(properties, properties.map(prop => randWork[prop])))
+  const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), await getRandWorkWithProperties(properties, properties.map(prop => isString(randWork[prop]) ? randWork[prop] as string : getRandArrItem(randWork[prop] as string[]))))
   options.push(correctAnswer)
   shuffleArray(options)
 
