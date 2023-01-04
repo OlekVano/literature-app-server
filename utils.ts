@@ -74,3 +74,7 @@ export function removeAllMatches<T>(arr: T[], match: T): T[] {
 export function removeArrItem<T>(arr: T[], item: T): void {
   arr.splice(arr.indexOf(item), 1)
 }
+
+export function isString(x: any) {
+  return Object.prototype.toString.call(x) === "[object String]"
+}
