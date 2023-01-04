@@ -13,6 +13,7 @@ datasource db {
 model Work {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   country        String
+  year           Int
   name           String
   author         String
   genre          String
