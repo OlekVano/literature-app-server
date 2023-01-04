@@ -1,7 +1,7 @@
 import prisma from './db'
 import { Work } from '@prisma/client'
 
-import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues, fillPatterns } from './utils'
+import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues, fillPatterns, removeEmpty, removeAllMatches, isString } from './utils'
 import { WorkProperty } from './types'
 
 async function getAllIds(): Promise<string[]> {
@@ -56,21 +56,20 @@ async function getAllPropVariations(property: WorkProperty): Promise<string[]> {
 }
 
 async function getRandPropVarsExcept(property: WorkProperty, n: number, exception: string|null = null): Promise<string[]> {
-  const variations: string[] = (await getAllPropVariations(property)).filter(e => e !== '').filter(e => e !== exception)
-  const uniqueVariations = removeDuplicates<string>(variations)
+  const variations: string[] = await getAllPropVariations(property)
+  const uniqueVariations: string[] = removeAllMatches(removeDuplicates(removeEmpty(variations)), exception) as string[]
 
-  return getRandArrItems<string>(uniqueVariations, n)
+  return getRandArrItems(uniqueVariations, n)
 }
 
-async function getRandPropVarExcept(property: WorkProperty, exception: string|null = null) {
-  return (await getRandPropVarsExcept(property, 1, exception)).flat()
+async function getRandPropVarExcept(property: WorkProperty, exception: string|null = null): Promise<string> {
+  return (await getRandPropVarsExcept(property, 1, exception))[0]
 }
 
-async function randomizeWorkProperties(work: Work, properties: WorkProperty[]): Promise<void> {
-  for (let property of properties) {
-    // @ts-ignore
-    work[property] = await getRandPropVarExcept(property, work[property])
-  }
+async function randomizeWorkProperties(work: Work, properties: Exclude<WorkProperty, 'mainCharacters'>[]): Promise<void> {
+  properties.forEach(async (property) => {
+    work[property] = await getRandPropVarExcept(property, work[property] as string)
+  })
 }
 
 export async function getRandABCDQuestion() {
@@ -85,21 +84,20 @@ export async function getRandABCDQuestion() {
 
   const randomWork: Work = await getRandWork()
 
-  // @ts-ignore
-  const randomQuestionPattern: [WorkProperty, string]  = getRandArrItem<[WorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]] !== ''))
+  const propertiesPatterns: [WorkProperty, string][] = getKeysValues(possibleQuestionPatterns) as [WorkProperty, string][]
+
+  const randomQuestionPattern: [WorkProperty, string] = getRandArrItem<[WorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]] !== ''))
 
   const property: WorkProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
 
-  // @ts-ignore
-  const correctAnswer: string = (!(randomWork[property] instanceof Array)) ? randomWork[property] : getRandArrItem<string>(randomWork[property])
+  const correctAnswer: string = isString(randomWork[property]) ? randomWork[property] as string : getRandArrItem(randomWork[property] as string[])
 
 
   const answerOptions = await getRandPropVarsExcept(property, 3, correctAnswer)
   answerOptions.push(correctAnswer)
   shuffleArray<string>(answerOptions)
 
-  // @ts-ignore
   const question: string = fillPattern(questionPattern, randomWork)
 
   return {
@@ -119,18 +117,15 @@ export async function getRandomCorrectSingleWorkStatementQuestion() {
   }
 
   const randWork: Work = await getRandWork()
-  // @ts-ignore
-  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
+  const randomQuestionPatterns: [Exclude<WorkProperty, 'mainCharacters'>, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
 
-  // @ts-ignore
-  const questionPattern: string = randomQuestionPatterns.pop()[1]
+  const questionPattern: [Exclude<WorkProperty, 'mainCharacters'>, string] | undefined = randomQuestionPatterns.pop()
+  if (questionPattern == undefined) return
+
   const properties = randomQuestionPatterns.map(e => e[0])
   await randomizeWorkProperties(randWork, properties)
-
-  // @ts-ignore
-  const correctAnswer: string = fillPattern(questionPattern, randWork)
+  const correctAnswer: string = fillPattern(questionPattern[0], randWork)
   
-  // @ts-ignore
   const options = fillPatterns(randomQuestionPatterns.map(e => e[1]), randWork)
   options.push(correctAnswer)
   shuffleArray(options)
