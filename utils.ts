@@ -74,3 +74,7 @@ export function removeArrItem<T>(arr: T[], item: T): void {
 export function isString(x: any) {
   return Object.prototype.toString.call(x) === "[object String]"
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
