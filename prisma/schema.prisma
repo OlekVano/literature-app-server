@@ -12,14 +12,17 @@ datasource db {
 
 model Work {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  country        String
-  year           String
-  name           String
-  author         String
-  genre          String
-  direction      String
-  theme          String
-  idea           String
+  country        String   @default("")
+  year           String   @default("")
+  name           String   @default("")
+  author         String   @default("")
+  genre          String   @default("")
+  direction      String   @default("")
+  theme          String   @default("")
+  idea           String   @default("")
+  family         String   @default("")
+  problem        String   @default("")
+  age            String   @default("")
   mainCharacters String[]
 }
 
