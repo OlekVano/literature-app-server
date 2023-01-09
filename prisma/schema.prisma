@@ -33,5 +33,5 @@ model Writer {
   pseudonym String   @default("")
   photoUrl   String   @default("")
   years     String[]
-  workIds   String[]
+  works   String[]
 }
