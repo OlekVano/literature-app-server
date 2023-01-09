@@ -31,7 +31,7 @@ model Writer {
   country   String   @default("")
   name      String   @default("")
   pseudonym String   @default("")
-  fotoUrl   String   @default("")
+  photoUrl   String   @default("")
   years     String[]
   workIds   String[]
 }
