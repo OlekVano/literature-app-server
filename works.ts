@@ -96,7 +96,7 @@ export async function getRandABCDQuestion() {
 
   const propertiesPatterns: [WorkProperty, string][] = getKeysValues(possibleQuestionPatterns) as [WorkProperty, string][]
 
-  const randomQuestionPattern: [WorkProperty, string] = getRandArrItem<[WorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]] !== ''))
+  const randomQuestionPattern: [WorkProperty, string] = getRandArrItem<[WorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]].length !== 0))
 
   const property: WorkProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
@@ -128,7 +128,7 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
   }
 
   const randWork: Work = await getRandWork()
-  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]] !== ''), 4)
+  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]].length !== 0), 4)
 
   const questionPattern: [WorkProperty, string] | undefined = randomQuestionPatterns.pop()
   if (questionPattern == undefined) return
