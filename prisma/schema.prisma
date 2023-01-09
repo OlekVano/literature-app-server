@@ -27,8 +27,11 @@ model Work {
 }
 
 model Writer {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  country String
-  name    String
-  workIds String[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  country   String   @default("")
+  name      String   @default("")
+  pseudonym String   @default("")
+  fotoUrl   String   @default("")
+  years     String[]
+  workIds   String[]
 }
