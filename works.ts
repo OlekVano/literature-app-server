@@ -2,7 +2,7 @@ import prisma from './db'
 import { Work } from '@prisma/client'
 
 import { getRandArrItems, removeDuplicates, shuffleArray, getRandNum, fillPattern, getRandArrItem, getKeysValues, fillPatterns, removeEmpty, removeAllMatches, isString } from './utils'
-import { WorkProperty } from './types'
+import { AskableWorkProperty } from './types'
 
 async function getAllIds(): Promise<string[]> {
   return (await prisma.work.findMany({
@@ -47,7 +47,7 @@ async function getMultiplePropVariations(ids: string[], property: string): Promi
   })).map(e => e[property])
 }
 
-async function getAllPropVariations(property: WorkProperty): Promise<string[]> {
+async function getAllPropVariations(property: AskableWorkProperty): Promise<string[]> {
   const selectDict: {[key: string]: boolean} = {}
   selectDict[property] = true
   return (await prisma.work.findMany({
@@ -55,24 +55,24 @@ async function getAllPropVariations(property: WorkProperty): Promise<string[]> {
   })).map(e => e[property]).flat()
 }
 
-async function getRandPropVarsExcept(property: WorkProperty, n: number, exception: string|null = null): Promise<string[]> {
+async function getRandPropVarsExcept(property: AskableWorkProperty, n: number, exception: string|null = null): Promise<string[]> {
   const variations: string[] = await getAllPropVariations(property)
   const uniqueVariations: string[] = removeAllMatches(removeDuplicates(removeEmpty(variations)), exception) as string[]
 
   return getRandArrItems(uniqueVariations, n)
 }
 
-async function getRandPropVarExcept(property: WorkProperty, exception: string|null = null): Promise<string> {
+async function getRandPropVarExcept(property: AskableWorkProperty, exception: string|null = null): Promise<string> {
   return (await getRandPropVarsExcept(property, 1, exception))[0]
 }
 
-async function randomizeWorkProperties(work: Work, properties: Exclude<WorkProperty, 'mainCharacters'>[]): Promise<void> {
+async function randomizeWorkProperties(work: Work, properties: Exclude<AskableWorkProperty, 'mainCharacters'>[]): Promise<void> {
   properties.forEach(async (property) => {
     work[property] = await getRandPropVarExcept(property, work[property] as string)
   })
 }
 
-export async function getRandWorkWithProperties(properties: WorkProperty[], exceptions: string[]): Promise<{[key: string]: string}> {
+export async function getRandWorkWithProperties(properties: AskableWorkProperty[], exceptions: string[]): Promise<{[key: string]: string}> {
   let randomProperties: any = {}
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
@@ -83,22 +83,24 @@ export async function getRandWorkWithProperties(properties: WorkProperty[], exce
 }
 
 export async function getRandABCDQuestion() {
-  const possibleQuestionPatterns: {[key in WorkProperty]: string} = {
+  const possibleQuestionPatterns: {[key in AskableWorkProperty]: string} = {
     'author': 'Хто є автором твору "%name%"?',
     'genre': 'Якого жанру є твір "%name%"?',
     'direction': 'Якого напряму є твір "%name%"?',
     'theme': 'Яка тема твору "%name%"?',
     'idea': 'Яка ідея твору "%name%"?',
+    'family': 'Якого літературного роду є твір "%name%"?',
+    'problem': 'Яка проблематика твору "%name%"?',
     'mainCharacters': 'Хто є одним з героїв твору "%name%"?'
   }
 
   const randomWork: Work = await getRandWork()
 
-  const propertiesPatterns: [WorkProperty, string][] = getKeysValues(possibleQuestionPatterns) as [WorkProperty, string][]
+  const propertiesPatterns: [AskableWorkProperty, string][] = getKeysValues(possibleQuestionPatterns) as [AskableWorkProperty, string][]
 
-  const randomQuestionPattern: [WorkProperty, string] = getRandArrItem<[WorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]].length !== 0))
+  const randomQuestionPattern: [AskableWorkProperty, string] = getRandArrItem<[AskableWorkProperty, string]>(getKeysValues(possibleQuestionPatterns).filter(e => randomWork[e[0]].length !== 0))
 
-  const property: WorkProperty = randomQuestionPattern[0]
+  const property: AskableWorkProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
 
   const correctAnswer: string = isString(randomWork[property]) ? randomWork[property] as string : getRandArrItem(randomWork[property] as string[])
@@ -118,19 +120,21 @@ export async function getRandABCDQuestion() {
 }
 
 export async function getRandCorrectSingleWorkStatementQuestion() {
-  const possibleOptionPatterns: {[key in WorkProperty]: string} = {
+  const possibleOptionPatterns: {[key in AskableWorkProperty]: string} = {
     'author': 'Автором твору є "%author%".',
     'genre': 'Твір є жанру "%genre%".',
     'direction': 'Твір є напряму "%direction%".',
     'theme': 'Тема твору - "%theme%".',
     'idea': 'Ідея твору - "%idea%".',
+    'family': 'Твір є літературного роду "%family%".',
+    "problem": 'Проблематика твору - "%problem%"',
     'mainCharacters': '%mainCharacters% - один з героїв твору.'
   }
 
   const randWork: Work = await getRandWork()
-  const randomQuestionPatterns: [WorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]].length !== 0), 4)
+  const randomQuestionPatterns: [AskableWorkProperty, string][] = getRandArrItems(getKeysValues(possibleOptionPatterns).filter(e => randWork[e[0]].length !== 0), 4)
 
-  const questionPattern: [WorkProperty, string] | undefined = randomQuestionPatterns.pop()
+  const questionPattern: [AskableWorkProperty, string] | undefined = randomQuestionPatterns.pop()
   if (questionPattern == undefined) return
 
   const properties = randomQuestionPatterns.map(e => e[0])
