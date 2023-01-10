@@ -1,4 +1,4 @@
-import { Work, Writer } from "@prisma/client";
+import { Work, Writer } from "@prisma/client"
 
 export type WorkProperty = keyof Work
 export type AskableWorkProperty = Exclude<WorkProperty, 'id' | 'country' | 'year' | 'age' | 'name'>
