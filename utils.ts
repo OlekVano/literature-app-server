@@ -59,6 +59,10 @@ export function getKeysValues<T extends string | number | symbol, Y>(dict: {[key
   return Object.entries(dict) as [T, Y][]
 }
 
+export function isEmpty(e: string | unknown[]) {
+  return e.length === 0
+}
+
 export function removeEmpty<T>(arr: T[]): T[] {
   return arr.filter(e => e !== '')
 }
