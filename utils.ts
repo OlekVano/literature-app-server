@@ -64,7 +64,7 @@ export function isEmpty(e: string | unknown[]) {
 }
 
 export function removeEmpty<T>(arr: T[]): T[] {
-  return arr.filter(e => e !== '')
+  return arr.filter(e => !isEmpty(e as string | unknown[]))
 }
 
 export function removeAllMatches<T>(arr: T[], match: T): T[] {
