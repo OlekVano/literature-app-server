@@ -121,13 +121,13 @@ export async function getRandABCDQuestion() {
 
 export async function getRandCorrectSingleWorkStatementQuestion() {
   const possibleOptionPatterns: {[key in AskableWorkProperty]: string} = {
-    'author': 'Автором твору є "%author%".',
-    'genre': 'Твір є жанру "%genre%".',
-    'direction': 'Твір є напряму "%direction%".',
-    'theme': 'Тема твору - "%theme%".',
-    'idea': 'Ідея твору - "%idea%".',
-    'family': 'Твір є літературного роду "%family%".',
-    "problem": 'Проблематика твору - "%problem%"',
+    'author': 'Автор твору - %author%.',
+    'genre': 'Жанр твору - %genre%.',
+    'direction': 'Напрям твору - %direction%.',
+    'theme': 'Тема твору - %theme%.',
+    'idea': 'Ідея твору - %idea%.',
+    'family': 'Літературний рід твору - %family%.',
+    "problem": 'Проблематика твору - %problem%.',
     'mainCharacters': '%mainCharacters% - один з героїв твору.'
   }
 
@@ -145,7 +145,7 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
   shuffleArray(options)
 
   return {
-    question: `Яке з твердженнь про твір "${randWork.name}" є вірним?`,
+    question: `Яке з твердженнь про твір "${randWork.name}" є правильним?`,
     options: options,
     answer: correctAnswer
   }
