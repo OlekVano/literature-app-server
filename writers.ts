@@ -39,7 +39,7 @@ async function getRandPropVarsExcept(property: AskableWriterProperty, n: number,
 
 export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in AskableWriterProperty]: string} = {
-    'pseudonym': 'Під яким псевдонімом відомий %pseudonym%?',
+    'pseudonym': 'Під яким псевдонімом відомий %name%?',
     'photoUrl': 'На якому з портретів зображений %pseudonym%?',
     'works': 'Який з наступних творів написав %pseudonym%?'
   }
