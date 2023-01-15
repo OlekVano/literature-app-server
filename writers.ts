@@ -31,9 +31,9 @@ async function getAllPropVariations(property: AskableWriterProperty): Promise<st
   })).map(e => e[property]).flat()
 }
 
-async function getRandPropVarsExcept(property: AskableWriterProperty, n: number, exception: string|null = null): Promise<string[]> {
+async function getRandPropVarsExcept(property: AskableWriterProperty, n: number, exceptions: string[]|string): Promise<string[]> {
   const variations: string[] = await getAllPropVariations(property)
-  const uniqueVariations: string[] = removeAllMatches(removeDuplicates(removeEmpty(variations)), exception) as string[]
+  const uniqueVariations: string[] = removeAllMatches(removeDuplicates(removeEmpty(variations)), exceptions)
   return getRandArrItems(uniqueVariations, n)
 }
 
@@ -56,7 +56,7 @@ export async function getRandABCDQuestion() {
 
   const correctAnswer: string = isString(randWriter[property]) ? randWriter[property] as string : getRandArrItem(randWriter[property] as string[])
 
-  const answerOptions = await getRandPropVarsExcept(property, 3, correctAnswer)
+  const answerOptions = await getRandPropVarsExcept(property, 3, randWriter[property])
   answerOptions.push(correctAnswer)
   shuffleArray(answerOptions)
 
