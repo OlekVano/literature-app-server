@@ -41,7 +41,7 @@ export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in AskableWriterProperty]: string} = {
     'pseudonym': 'Під яким псевдонімом відомий %name%?',
     'photoUrl': 'На якому з портретів зображений %pseudonym%?',
-    'works': 'Який з наступних творів написав %pseudonym%?'
+    'works': 'Який твір написав %pseudonym%?'
   }
 
   const randWriter: Writer = await getRand()

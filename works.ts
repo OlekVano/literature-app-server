@@ -84,14 +84,14 @@ export async function getRandWorkWithProperties(properties: AskableWorkProperty[
 
 export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in AskableWorkProperty]: string} = {
-    'author': 'Хто є автором твору "%name%"?',
-    'genre': 'Якого жанру є твір "%name%"?',
-    'direction': 'Якого напряму є твір "%name%"?',
+    'author': 'Хто автор твору "%name%"?',
+    'genre': 'Який жанр твору "%name%"?',
+    'direction': 'Який напрям твору "%name%"?',
     'theme': 'Яка тема твору "%name%"?',
     'idea': 'Яка ідея твору "%name%"?',
-    'family': 'Якого літературного роду є твір "%name%"?',
+    'family': 'Який літературний рід твору "%name%"?',
     'problem': 'Яка проблематика твору "%name%"?',
-    'mainCharacters': 'Хто є одним з героїв твору "%name%"?'
+    'mainCharacters': 'Хто один з героїв твору "%name%"?'
   }
 
   const randomWork: Work = await getRandWork()
