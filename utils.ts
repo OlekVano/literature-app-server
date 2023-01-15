@@ -67,7 +67,8 @@ export function removeEmpty<T>(arr: T[]): T[] {
   return arr.filter(e => !isEmpty(e as string | unknown[]))
 }
 
-export function removeAllMatches<T>(arr: T[], match: T): T[] {
+export function removeAllMatches<T>(arr: T[], match: T[]|T): T[] {
+  if (Array.isArray(match)) return arr.filter(e => !match.includes(e))
   return arr.filter(e => e !== match)
 }
 
