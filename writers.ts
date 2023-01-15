@@ -45,11 +45,12 @@ export async function getRandABCDQuestion() {
   }
 
   const randWriter: Writer = await getRand()
-  if (randWriter.pseudonym == '') randWriter.pseudonym = randWriter.name
 
   const propertiesPatters: [AskableWriterProperty, string][] = getKeysValues(possibleQuestionPatterns)
 
   const randomQuestionPattern: [AskableWriterProperty, string] = getRandArrItem(getKeysValues(possibleQuestionPatterns).filter(e => !isEmpty(randWriter[e[0]])))
+
+  if (randWriter.pseudonym == '') randWriter.pseudonym = randWriter.name
 
   const property: AskableWriterProperty = randomQuestionPattern[0]
   const questionPattern: string = randomQuestionPattern[1]
