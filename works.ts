@@ -86,7 +86,7 @@ export async function getRandABCDQuestion() {
   const possibleQuestionPatterns: {[key in AskableWorkProperty]: string} = {
     'author': 'Хто автор твору "%name%"?',
     'genre': 'Який жанр твору "%name%"?',
-    'direction': 'Який напрям твору "%name%"?',
+    'direction': 'Який літературний напрям твору "%name%"?',
     'theme': 'Яка тема твору "%name%"?',
     'idea': 'Яка ідея твору "%name%"?',
     'family': 'Який літературний рід твору "%name%"?',
@@ -123,7 +123,7 @@ export async function getRandCorrectSingleWorkStatementQuestion() {
   const possibleOptionPatterns: {[key in AskableWorkProperty]: string} = {
     'author': 'Автор твору - %author%.',
     'genre': 'Жанр твору - %genre%.',
-    'direction': 'Напрям твору - %direction%.',
+    'direction': 'Літературний напрям твору - %direction%.',
     'theme': 'Тема твору - %theme%.',
     'idea': 'Ідея твору - %idea%.',
     'family': 'Літературний рід твору - %family%.',
